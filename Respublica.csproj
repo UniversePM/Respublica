@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Reference Include="Minecraft.Server.FourKit">
+			<HintPath>..\Minecraft.Server.FourKit.dll</HintPath>
+		</Reference>
+		<Reference Include="LiteDB">
+			<HintPath>LiteDB.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+</Project>
