@@ -3,7 +3,7 @@
 # Respublica
 Respublica is a [FourKit](https://www.github.com/sylvessa/MinecraftConsoles) plugin designed to give LCE players the traditional nations experience!
 
-It is a Nation plugin designed with inspiration from Towny.
+You can build your home in a community, start your own town, or even rule your own nation! Your options are near limitless with this plugin.
 
 ## Commands
 A full list of commands can be found here: COMING SOON
