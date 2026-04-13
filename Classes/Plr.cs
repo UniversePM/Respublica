@@ -154,7 +154,7 @@ public static partial class DBInteract // DBInteract class partition for players
         }
 
         var newplr = getPlr(uid);
-        if (string.IsNullOrEmpty(newplr.town))
+        if (!string.IsNullOrEmpty(newplr.town))
         {
             Console.WriteLine("[RESPUBLICA] User already in town!");
             return;
