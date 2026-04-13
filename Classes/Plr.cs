@@ -2,7 +2,13 @@ using Minecraft.Server.FourKit.Entity;
 
 namespace Respublica;
 
-public class MCPlr
+public class Invite // Class for processing invites
+{
+    public string name { get; set; } = "";
+    public DateTime expiration { get; set; } = DateTime.UtcNow;
+}
+
+public class MCPlr // Class for players and for default plot permissions
 {
     public string name { get; set; } = "";
     public Guid uid { get; set; } = Guid.Empty;
@@ -11,14 +17,15 @@ public class MCPlr
     public bool DEFAULT_BREAK_PERM { get; set; } = false;
     public bool DEFAULT_PLACE_PERM { get; set; } = false;
     public bool DEFAULT_MOB_PERM { get; set; } = false; // TODO: make these perms configurable in the future
+    public List<Invite> invites { get; set; } = [];
 }
 
-public class DBPlr : MCPlr
+public class DBPlr : MCPlr // DB class for player
 {
     public LiteDB.ObjectId id { get; set; } = LiteDB.ObjectId.NewObjectId();
 }
 // UNI - literally only made this for guid to username LOL
-public static class Plr
+public static class Plr // Class for processing player classes
 {
     public static string guidToUsrname(Guid uid)
     {
@@ -47,9 +54,21 @@ public static class Plr
         }
         return plr.uid;
     }
+    public static MCPlr initPlr(Guid uid, string name)
+    {
+        var col = Database.Instance.GetCollection<DBPlr>("plr");
+
+        var plr = new MCPlr
+        {
+            name = name,
+            uid = uid
+        };
+
+        return plr;
+    }
 }
 
-public static partial class DBInteract
+public static partial class DBInteract // DBInteract class partition for players
 {
     public static void initPlr(Guid uid, string name)
     {
@@ -91,6 +110,24 @@ public static partial class DBInteract
 
         col.Insert(dbplr);
     }
+    public static void updatePlr(DBPlr plr, MCPlr nplr)
+    {
+        var col = Database.Instance.GetCollection<DBPlr>("plr");
+		if (col.FindOne(x => x.uid == plr.uid) == null) {
+			Console.WriteLine("[RESPUBLICA] Tried to modify non-registered player!");
+			return;
+		}
+
+        var dbp = new DBPlr();
+		foreach (var prop in typeof(MCPlr).GetProperties())
+		{
+			if (prop.CanWrite) prop.SetValue(dbp, prop.GetValue(nplr));
+		} // Convert MCPlr to DBPlr
+
+        dbp.id = plr.id;
+
+		col.Update(dbp);
+    }
     public static void updatePlr(Guid uid, string name)
     {
         var col = Database.Instance.GetCollection<DBPlr>("plr");
@@ -106,5 +143,32 @@ public static partial class DBInteract
 
         col.Update(newplr);
     }
+    public static void addInvite(Guid uid, Invite invite)
+    {
+        var col = Database.Instance.GetCollection<DBPlr>("plr");
+
+        if (!isPlrReal(uid))
+        {
+            Console.WriteLine("[RESPUBLICA] User doesn't exist!");
+            return;
+        }
+
+        var newplr = getPlr(uid);
+        if (string.IsNullOrEmpty(newplr.town))
+        {
+            Console.WriteLine("[RESPUBLICA] User already in town!");
+            return;
+        }
+
+        if (newplr.invites.Contains(invite))
+        {
+            Console.WriteLine("[RESPUBLICA] User already invited!");
+        }
+
+        newplr.invites.Add(invite);
+        col.Update(newplr);
+    }
+
     public static bool isPlrReal(Guid uid) => Database.Instance.GetCollection<DBPlr>("plr").FindOne(LiteDB.Query.EQ("uid", uid)) != null;
+    public static DBPlr getPlr(Guid uid) => Database.Instance.GetCollection<DBPlr>("plr").FindOne(LiteDB.Query.EQ("uid", uid)) ?? new();
 }

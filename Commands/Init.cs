@@ -2,7 +2,7 @@ using Minecraft.Server.FourKit;
 
 namespace Respublica.Commands;
 
-public static class Init
+public static class Init // Function/class for initializing all the commands (for cleanliness)
 {
     public static void InitCmd() {
         FourKit.getCommand("town").setExecutor(new TownCmd());

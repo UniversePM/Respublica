@@ -11,7 +11,7 @@ public class Respublica : ServerPlugin
 //	public static Respublica? getInstance() => _instance;
 
 	public override string name => "Respublica";
-	public override string version => "1.0.0";
+	public override string version => "1.0.0-alpha.1";
 	public override string author => "UniPM";
 
 	private const string path = @"./plugindb"; // i have it as ./ bc it executes as the server exe - uni

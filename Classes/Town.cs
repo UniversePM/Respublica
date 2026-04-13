@@ -2,28 +2,28 @@ namespace Respublica;
 
 using Minecraft.Server.FourKit.Entity;
 
-public class MCTown {
+public class MCTown { // Class for non-DB towns
 	public string name { get; set; } = "";
-//      public int bal; // TODO: implement once eco plugins become a thing with apis n shit
-        public bool DEFAULT_FIRE_PERM { get; set; } = false;
-        public bool DEFAULT_BREAK_PERM { get; set; } = false;
-        public bool DEFAULT_PLACE_PERM { get; set; } = false;
-        public bool DEFAULT_MOB_PERM { get; set; } = false; // TODO: make these perms configurable in the future
-        public Guid mayor { get; set; } = Guid.Empty;
-        public List<Guid> residents { get; set; } = new List<Guid>();
+//  public int bal; // TODO: implement once eco plugins become a thing with apis n shit
+    public bool DEFAULT_FIRE_PERM { get; set; } = false;
+    public bool DEFAULT_BREAK_PERM { get; set; } = false;
+    public bool DEFAULT_PLACE_PERM { get; set; } = false;
+    public bool DEFAULT_MOB_PERM { get; set; } = false; // TODO: make these perms configurable in the future
+    public Guid mayor { get; set; } = Guid.Empty;
+    public List<Guid> residents { get; set; } = new List<Guid>();
 	public MCChunk homeChunk { get; set; } = Chunk.initChunk(0, 0, ""); // blank nothing chunk
 }
 
-public class DBTown : MCTown {
+public class DBTown : MCTown { // Class for DB towns
 	public LiteDB.ObjectId id { get; set; } = LiteDB.ObjectId.NewObjectId();
 }
 
-public static class Town
+public static class Town // Class for processing towns
 {
 	public static string formatName(string name) => name.Replace("_", " ");
 }
 
-public static partial class DBInteract {
+public static partial class DBInteract { // DBInteract class partition for towns
 	public static void initTown(Player mayor, string name) {
 		var col = Database.Instance.GetCollection<DBTown>("towns");
 		if (col.FindOne(LiteDB.Query.EQ("name", name)) != null) {

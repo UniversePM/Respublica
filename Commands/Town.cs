@@ -3,7 +3,7 @@ namespace Respublica.Commands;
 using Minecraft.Server.FourKit.Command;
 using Minecraft.Server.FourKit.Entity;
 
-public class TownCmd : CommandExecutor
+public class TownCmd : CommandExecutor // Commands for managing towns
 {
 	public bool onCommand(CommandSender sender, Command command, string label, string[] args)
 	{
@@ -28,17 +28,14 @@ public class TownCmd : CommandExecutor
 			switch(args[0]) {
 				case "new":
                 case "create":
-//					Console.WriteLine("create worked");
 					if (!string.IsNullOrEmpty(t.name)) {
                         sender.sendMessage("You already have a town!");
-//						Console.WriteLine("bro had a town");
                         break;
                 	}
 					var cc = Chunk.cToCC(((Player)sender).getLocation());
 					var nc = Chunk.getChunk(cc.x, cc.z);
 					
-					if (nc != null) { //Console.WriteLine("shit its not null??");
-					break; }
+					if (nc != null) break;
 
 					DBInteract.initTown((Player)sender, args[1]);
 					sender.sendMessage($"Created town \"{Town.formatName(args[1])}\"!");
@@ -47,7 +44,6 @@ public class TownCmd : CommandExecutor
 					if (args.Length < 2) { sender.sendMessage("Invalid set command."); break; }
 					if (string.IsNullOrEmpty(t.name)) {
                         sender.sendMessage("You don't have a town!");
-//						Console.WriteLine("bro dont had a town");
                         break;
                 	}
 
@@ -125,20 +121,20 @@ public class TownCmd : CommandExecutor
 
 					if (string.IsNullOrEmpty(t.name)) {
                         sender.sendMessage("You don't have a town!");
-//						Console.WriteLine("bro dont had a town");
                         break;
                 	}
 
-					switch (args[1])
+					switch (args[1]) // sub-sub command
 					{
 						case "add":
 							if (args.Length < 3) { sender.sendMessage("Invalid invite command."); break; }
-							if (t.residents.Exists(x => x == Plr.usrToGuid(args[2]))) break;
+							if (t.residents.Exists(x => x == Plr.usrToGuid(args[2]))) {sender.sendMessage($"Player {args[2]} is already in this town!");break;}
+							if (!string.IsNullOrEmpty(DBInteract.getPlr(Plr.usrToGuid(args[2])).town)) {sender.sendMessage($"Player {args[2]} is already in another town!");break;}
+							if (!DBInteract.isPlrReal(Plr.usrToGuid(args[2]))) {sender.sendMessage($"Player {args[2]} is not registered on this server.");break;}
 							var newjoin = Plr.usrToGuid(args[2]);
-							var newj = (MCTown)t;
-							newj.residents.Add(newjoin); // UNI - temp
-							DBInteract.updateTown(t, newj);
-							sender.sendMessage($"Invited {newjoin} to the town.");
+							var newinv = new Invite {name=t.name,expiration=DateTime.UtcNow.AddDays(3)}; // UNI - setting expiration to 3 for now
+							DBInteract.addInvite(newjoin, newinv);
+							sender.sendMessage($"Invited {args[2]} to the town.");
 							break;
 					}
 

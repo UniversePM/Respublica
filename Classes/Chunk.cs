@@ -2,29 +2,29 @@ namespace Respublica;
 
 using Minecraft.Server.FourKit;
 
-public class ChunkCoord {
+public class ChunkCoord { // Class for quick-storing chunk coordinates
 	public int x;
 	public int z;
 }
 
-public enum availabilityEnum {
+public enum availabilityEnum { // Enum for easier availability notice
 	AVAILABLE,
 	SELF_CLAIMED, // already claimed by the town trying to claim
 	EX_CLAIMED, // already claimed by a different town
 	NOT_NEAR // not near any town chunks
 }
 
-public class MCChunk {
+public class MCChunk { // Class for Non-DB chunks
 	public int x { get; set; }
-        public int z { get; set; }
-        public string town { get; set; } = ""; // name of town that owns the land
+    public int z { get; set; }
+    public string town { get; set; } = ""; // name of town that owns the land
 }
 
-public class DBChunk : MCChunk {
+public class DBChunk : MCChunk { // Class (of MCChunk) for DB chunks
 	public LiteDB.ObjectId id { get; set; } = LiteDB.ObjectId.NewObjectId();
 }
 
-public static class Chunk {
+public static class Chunk { // Class for processing chunks in certain ways
 	public static MCChunk initChunk(int x, int z, string town) => new MCChunk {x=x, z=z, town=town};
 
 	public static DBChunk initDBc(MCChunk chunk)
@@ -77,7 +77,7 @@ public static class Chunk {
 	public static ChunkCoord cToCC(Location loc) => new() { x=(int)Math.Floor(loc.getX()/16), z=(int)Math.Floor(loc.getZ()/16) };
 }
 
-public static partial class DBInteract {
+public static partial class DBInteract { // DB class partition for chunks
 	public static void createChunk(MCChunk chunk) {
 		var col = Database.Instance.GetCollection<DBChunk>("chunks");
 		if (Chunk.getChunk(chunk.x, chunk.z) != null) {
