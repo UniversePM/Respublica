@@ -39,6 +39,19 @@ public class InvCmd : CommandExecutor // Commands for managing invites
                     sender.sendMessage($"You have joined {args[1]}!");
 
                     break;
+                case "decline":
+                    if (args.Length < 2) break;
+
+                    if (DBInteract.getTown(args[1]) == null) break;
+                    var dcplr = DBInteract.getPlr(((Player)sender).getUniqueId());
+                    if (args[1] == "all") { dcplr.invites.Clear(); break; }
+                    if (!dcplr.invites.Any(x => x.name == args[1])) break;
+                    dcplr.invites.RemoveAll(x => x.name == args[1]);
+
+                    DBInteract.updatePlr(DBInteract.getPlr(((Player)sender).getUniqueId()), dcplr);
+
+                    sender.sendMessage($"You have declined {args[1]}.");
+                    break;
             }
         }
         return true;
