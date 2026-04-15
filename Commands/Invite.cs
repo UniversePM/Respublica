@@ -12,7 +12,7 @@ public class InvCmd : CommandExecutor // Commands for managing invites
         if (args.Length == 0)
         {
             sender.sendMessage("Town invites:");
-            foreach (var al0town in DBInteract.getPlr(((Player)sender).getUniqueId()).invites) sender.sendMessage(al0town.name);
+            foreach (var al0town in DBInteract.getPlr(((Player)sender).getUniqueId()).invites) sender.sendMessage(DBInteract.getTownById(al0town.id).name);
             sender.sendMessage("Do /invite accept [name] to join a town!");
         }
 
@@ -23,13 +23,15 @@ public class InvCmd : CommandExecutor // Commands for managing invites
                 case "accept":
                     if (args.Length < 2) break;
 
-                    if (DBInteract.getTown(args[1]) == null) break;
+                    var act = DBInteract.getTown(args[1]);
+
+                    if (act == null) break;
 
                     var acplr = DBInteract.getPlr(((Player)sender).getUniqueId());
-                    if (!acplr.invites.Any(x => x.name == args[1])) break;
+                    if (!acplr.invites.Any(x => x.id == act.id)) break;
 
-                    acplr.invites.RemoveAll(x => x.name == args[1]);
-                    acplr.town = args[1];
+                    acplr.invites.RemoveAll(x => x.id == act.id);
+                    acplr.town = act.id;
 
                     DBInteract.updatePlr(DBInteract.getPlr(((Player)sender).getUniqueId()), acplr);
                     var actown = DBInteract.getTown(args[1]);
@@ -41,12 +43,12 @@ public class InvCmd : CommandExecutor // Commands for managing invites
                     break;
                 case "decline":
                     if (args.Length < 2) break;
-
-                    if (DBInteract.getTown(args[1]) == null) break;
+                    var dct = DBInteract.getTown(args[1]);
+                    if (dct == null) break;
                     var dcplr = DBInteract.getPlr(((Player)sender).getUniqueId());
                     if (args[1] == "all") { dcplr.invites.Clear(); break; }
-                    if (!dcplr.invites.Any(x => x.name == args[1])) break;
-                    dcplr.invites.RemoveAll(x => x.name == args[1]);
+                    if (!dcplr.invites.Any(x => x.id == dct.id)) break;
+                    dcplr.invites.RemoveAll(x => x.id == dct.id);
 
                     DBInteract.updatePlr(DBInteract.getPlr(((Player)sender).getUniqueId()), dcplr);
 

@@ -4,7 +4,7 @@ namespace Respublica;
 
 public class Invite // Class for processing invites
 {
-    public string name { get; set; } = "";
+    public LiteDB.ObjectId id { get; set; } = LiteDB.ObjectId.Empty; // UNI - don't use this like a db object, this is just for storing town ids
     public DateTime expiration { get; set; } = DateTime.UtcNow;
 }
 
@@ -12,7 +12,7 @@ public class MCPlr // Class for players and for default plot permissions
 {
     public string name { get; set; } = "";
     public Guid uid { get; set; } = Guid.Empty;
-    public string town { get; set; } = "";
+    public LiteDB.ObjectId town { get; set; } = LiteDB.ObjectId.Empty;
     public bool DEFAULT_FIRE_PERM { get; set; } = false;
     public bool DEFAULT_BREAK_PERM { get; set; } = false;
     public bool DEFAULT_PLACE_PERM { get; set; } = false;
@@ -154,7 +154,7 @@ public static partial class DBInteract // DBInteract class partition for players
         }
 
         var newplr = getPlr(uid);
-        if (!string.IsNullOrEmpty(newplr.town))
+        if (newplr.town != LiteDB.ObjectId.Empty)
         {
             Console.WriteLine("[RESPUBLICA] User already in town!");
             return;

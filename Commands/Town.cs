@@ -129,10 +129,10 @@ public class TownCmd : CommandExecutor // Commands for managing towns
 						case "add":
 							if (args.Length < 3) { sender.sendMessage("Invalid invite command."); break; }
 							if (t.residents.Exists(x => x == Plr.usrToGuid(args[2]))) {sender.sendMessage($"Player {args[2]} is already in this town!");break;}
-							if (!string.IsNullOrEmpty(DBInteract.getPlr(Plr.usrToGuid(args[2])).town)) {sender.sendMessage($"Player {args[2]} is already in another town!");break;}
+							if (DBInteract.getPlr(Plr.usrToGuid(args[2])).town == LiteDB.ObjectId.Empty) {sender.sendMessage($"Player {args[2]} is already in another town!");break;}
 							if (!DBInteract.isPlrReal(Plr.usrToGuid(args[2]))) {sender.sendMessage($"Player {args[2]} is not registered on this server.");break;}
 							var newjoin = Plr.usrToGuid(args[2]);
-							var newinv = new Invite {name=t.name,expiration=DateTime.UtcNow.AddDays(3)}; // UNI - setting expiration to 3 for now
+							var newinv = new Invite {id=t.id,expiration=DateTime.UtcNow.AddDays(3)}; // UNI - setting expiration to 3 for now
 							DBInteract.addInvite(newjoin, newinv);
 							sender.sendMessage($"Invited {args[2]} to the town.");
 							break;

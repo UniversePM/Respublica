@@ -92,4 +92,5 @@ public static partial class DBInteract { // DBInteract class partition for towns
 		if (getT == null) return new DBTown();
 		else return getT;
 	}
+	public static DBTown getTownById(LiteDB.ObjectId id) => Database.Instance.GetCollection<DBTown>("towns").Find(x => x.id == id).FirstOrDefault() ?? new DBTown();
 }
