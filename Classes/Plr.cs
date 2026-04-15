@@ -56,8 +56,6 @@ public static class Plr // Class for processing player classes
     }
     public static MCPlr initPlr(Guid uid, string name)
     {
-        var col = Database.Instance.GetCollection<DBPlr>("plr");
-
         var plr = new MCPlr
         {
             name = name,

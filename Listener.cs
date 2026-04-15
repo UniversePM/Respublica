@@ -38,7 +38,7 @@ public class RespublicaListener : Listener
 
 		if (chunk == null) return;
 
-		if (DBInteract.getTown(chunk.town) != DBInteract.getTown(e.getPlayer()))
+		if (DBInteract.getTownById(chunk.town) != DBInteract.getTown(e.getPlayer()))
 		{
 			e.getPlayer().sendMessage(toTex(eventEnum.INTERACT_ERR));
 			e.setCancelled(true);

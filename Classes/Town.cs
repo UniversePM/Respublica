@@ -6,12 +6,12 @@ public class MCTown { // Class for non-DB towns
 	public string name { get; set; } = "";
 //  public int bal; // TODO: implement once eco plugins become a thing with apis n shit
     public bool DEFAULT_FIRE_PERM { get; set; } = false;
-    public bool DEFAULT_BREAK_PERM { get; set; } = false;
-    public bool DEFAULT_PLACE_PERM { get; set; } = false;
+    public bool DEFAULT_PVP_PERM { get; set; } = false;
+    public bool DEFAULT_EXPLOSION_PERM { get; set; } = false;
     public bool DEFAULT_MOB_PERM { get; set; } = false; // TODO: make these perms configurable in the future
     public Guid mayor { get; set; } = Guid.Empty;
     public List<Guid> residents { get; set; } = new List<Guid>();
-	public MCChunk homeChunk { get; set; } = Chunk.initChunk(0, 0, ""); // blank nothing chunk
+	public MCChunk homeChunk { get; set; } = Chunk.initChunk(0, 0, LiteDB.ObjectId.Empty); // blank nothing chunk
 }
 
 public class DBTown : MCTown { // Class for DB towns
@@ -35,7 +35,7 @@ public static partial class DBInteract { // DBInteract class partition for towns
 			return;
 		}
 		var ccoord = Chunk.cToCC(mayor.getLocation());
-		var newc = Chunk.initChunk(ccoord.x, ccoord.z, name);
+		var newc = Chunk.initChunk(ccoord.x, ccoord.z, getTown(name).id);
        		var newtown = new DBTown
         	{
             	name = name,
@@ -61,17 +61,16 @@ public static partial class DBInteract { // DBInteract class partition for towns
 			Console.WriteLine("[RESPUBLICA] Tried to modify non-existent town!");
 			return;
 		}
-		col.Update(new DBTown {
-			id = town.id,
-			name = newtown.name,
-			DEFAULT_FIRE_PERM = newtown.DEFAULT_FIRE_PERM,
-			DEFAULT_BREAK_PERM = newtown.DEFAULT_BREAK_PERM,
-			DEFAULT_PLACE_PERM = newtown.DEFAULT_PLACE_PERM,
-			DEFAULT_MOB_PERM = newtown.DEFAULT_MOB_PERM,
-			mayor = newtown.mayor,
-			residents = newtown.residents,
-			homeChunk = newtown.homeChunk
-		}); // UNI - there has to be a better way of doing this omfg
+
+		var dbt = new DBTown();
+		foreach (var prop in typeof(MCTown).GetProperties())
+		{
+			if (prop.CanWrite) prop.SetValue(dbt, prop.GetValue(newtown));
+		} // Convert MCTown to DBTown
+
+		dbt.id = town.id;
+
+		col.Update(dbt); // UNI - there has to be a better way of doing this omfg
 	}
 	public static DBTown getTown(string name)
 	{

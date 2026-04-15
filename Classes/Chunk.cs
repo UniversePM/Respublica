@@ -17,7 +17,7 @@ public enum availabilityEnum { // Enum for easier availability notice
 public class MCChunk { // Class for Non-DB chunks
 	public int x { get; set; }
     public int z { get; set; }
-    public string town { get; set; } = ""; // name of town that owns the land
+    public LiteDB.ObjectId town { get; set; } = LiteDB.ObjectId.Empty; // name of town that owns the land
 }
 
 public class DBChunk : MCChunk { // Class (of MCChunk) for DB chunks
@@ -25,7 +25,7 @@ public class DBChunk : MCChunk { // Class (of MCChunk) for DB chunks
 }
 
 public static class Chunk { // Class for processing chunks in certain ways
-	public static MCChunk initChunk(int x, int z, string town) => new MCChunk {x=x, z=z, town=town};
+	public static MCChunk initChunk(int x, int z, LiteDB.ObjectId town) => new() { x=x, z=z, town=town};
 
 	public static DBChunk initDBc(MCChunk chunk)
 	{
@@ -62,8 +62,8 @@ public static class Chunk { // Class for processing chunks in certain ways
 	}
 
 	public static availabilityEnum chunkAvailable(MCChunk chunk) { // chunk format: x is the chunk x, z is the chunk z, town is the town that is requesting availability
-		string? tcheck = getChunk(chunk.x, chunk.z)?.town; // gets the REAL town in that chunk, null if unclaimed
-		if (tcheck != null) {
+		LiteDB.ObjectId? tcheck = getChunk(chunk.x, chunk.z)?.town; // gets the REAL town in that chunk, null if unclaimed
+		if (tcheck != LiteDB.ObjectId.Empty) {
 			if (tcheck == chunk.town) return availabilityEnum.SELF_CLAIMED;
 			return availabilityEnum.EX_CLAIMED;
 		}

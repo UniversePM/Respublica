@@ -1,3 +1,37 @@
 namespace Respublica;
 
-// UNI - do this
+using Minecraft.Server.FourKit.Entity;
+
+// UNI - decided to separate plots from general chunk information, might change at some later time
+public class MCPlot : MCChunk // Class for processing plots
+{
+    public Guid owner { get; set; } = Guid.Empty;
+    // configs
+    public string name { get; set; } = "";
+    public string district { get; set; } = "";
+//  public int price { get; set; }
+//  public bool forsale { get; set; }
+    public bool PVP { get; set; } = false;
+    public bool EXPLOSION { get; set; } = false;
+    public bool FIRE { get; set; } = false;
+    public bool MOBS { get; set; } = false;
+}
+
+public class DBPlot : MCPlot // Class for DB Plots
+{
+    public LiteDB.ObjectId id { get; set; } = LiteDB.ObjectId.NewObjectId();
+}
+
+public static partial class DBInteract
+{
+    public static void initPlot(MCChunk chunk)
+    {
+        var col = Database.Instance.GetCollection<DBPlot>("plots");
+        var dbpl = new DBPlot();
+		foreach (var prop in typeof(MCChunk).GetProperties())
+		{
+			if (prop.CanWrite) prop.SetValue(dbpl, prop.GetValue(chunk));
+		} // Convert MCChunk to DBPlot
+        col.Insert(dbpl);
+    }
+}

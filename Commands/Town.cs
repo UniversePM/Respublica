@@ -20,7 +20,7 @@ public class TownCmd : CommandExecutor // Commands for managing towns
 			sender.sendMessage($"---{Town.formatName(t.name)}---");
 			sender.sendMessage($"Chunk count: {Database.Instance.GetCollection<DBChunk>("chunks").Count(LiteDB.Query.EQ("town", t.name))}"); // UNI - srry didn't feel like adding a function
 			sender.sendMessage($"Mayor: {Plr.guidToUsrname(t.mayor)}");
-			sender.sendMessage($"PLACE: {t.DEFAULT_PLACE_PERM} BREAK: {t.DEFAULT_BREAK_PERM} FIRE: {t.DEFAULT_FIRE_PERM} MOBS: {t.DEFAULT_MOB_PERM}");
+			sender.sendMessage($"PVP: {t.DEFAULT_PVP_PERM} EXPLOSIONS: {t.DEFAULT_EXPLOSION_PERM} FIRE: {t.DEFAULT_FIRE_PERM} MOBS: {t.DEFAULT_MOB_PERM}");
 			return true;
 		}
 
@@ -94,7 +94,7 @@ public class TownCmd : CommandExecutor // Commands for managing towns
 					if (t.mayor != ((Player)sender).getUniqueId()) { sender.sendMessage("You do not have permission to use this command."); break; }
 
 					var newcoord2 = Chunk.cToCC(((Player)sender).getLocation());
-					var newclaim = Chunk.initChunk(newcoord2.x, newcoord2.z, t.name); // UNI - to put a little less on the db
+					var newclaim = Chunk.initChunk(newcoord2.x, newcoord2.z, t.id); // UNI - to put a little less on the db
 					var available = Chunk.chunkAvailable(newclaim);
 					if (available != availabilityEnum.AVAILABLE)
 					{
