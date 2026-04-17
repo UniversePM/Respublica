@@ -28,6 +28,27 @@ public class PlotCmd : CommandExecutor // Commands for managing invites
             sender.sendMessage(string.Format("Town: {0}", string.IsNullOrEmpty(tname) ? "None" : Town.formatName(tname))); // UNI - don't question the string.Format use
             sender.sendMessage(string.Format("Owner: {0}", string.IsNullOrEmpty(Plr.guidToUsrname(plot.owner)) ? "None" : Plr.guidToUsrname(plot.owner)));
             sender.sendMessage($"PVP: {plot.perm.PVP} EXPLOSIONS: {plot.perm.EXPLOSION} FIRE: {plot.perm.FIRE} MOBS: {plot.perm.MOBS}");
+            sender.sendMessage(plot.forsale ? "Plot for sale! Do [/plot claim] to claim this plot." : "Plot not for sale.");
+        }
+
+        if (args.Length > 0)
+        {
+            switch (args[0])
+            {
+                case "claim":
+                    var claimchunk = Chunk.getChunk(pcoord.x, pcoord.z);
+                    if (claimchunk == null) { sender.sendMessage("No town has claimed this chunk!"); break; }
+                    if (plot.owner == ((Player)sender).getUniqueId()) { sender.sendMessage("You already own this plot!"); break; }
+                    if (plot.owner != Guid.Empty) { sender.sendMessage("Plot is already claimed!"); break; }
+                    if (!plot.forsale) { sender.sendMessage("Plot not for sale!"); break; }
+
+                    if (DBInteract.getPlot(pcoord.x, pcoord.z) == null) DBInteract.initPlot(claimchunk);
+                    var claimplot = plot;
+                    claimplot.owner = ((Player)sender).getUniqueId();
+                    DBInteract.updatePlot(plot, claimplot);
+                    sender.sendMessage($"Claimed plot {{{pcoord.x}, {pcoord.z}}}");
+                    break;
+            }
         }
 
         return true;

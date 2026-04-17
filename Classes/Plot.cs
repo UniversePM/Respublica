@@ -16,7 +16,7 @@ public class MCPlot : MCChunk // Class for processing plots
     public string name { get; set; } = "";
     public string district { get; set; } = "";
 //  public int price { get; set; }
-//  public bool forsale { get; set; }
+    public bool forsale { get; set; }
     public PlotPerm perm { get; set; } = new();
 }
 

@@ -24,10 +24,11 @@ public class TownCmd : CommandExecutor // Commands for managing towns
 			return true;
 		}
 
-		if (args.Length > 1) {
+		if (args.Length > 0) {
 			switch(args[0]) {
 				case "new":
                 case "create":
+					if (args.Length < 2) { sender.sendMessage("Invalid set command."); break; }
 					if (!string.IsNullOrEmpty(t.name)) {
                         sender.sendMessage("You already have a town!");
                         break;
