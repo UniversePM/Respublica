@@ -1,5 +1,6 @@
 namespace Respublica;
 
+using System.Text;
 using Minecraft.Server.FourKit.Entity;
 
 public class MCTown { // Class for non-DB towns
@@ -18,6 +19,15 @@ public class DBTown : MCTown { // Class for DB towns
 public static class Town // Class for processing towns
 {
 	public static string formatName(string name) => name.Replace("_", " ");
+	public static string RemoveSpecialCharacters(this string str) {
+    	StringBuilder sb = new StringBuilder();
+    	foreach (char c in str) {
+        	if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '-' || c == '_' || c == '\'') { // UNI - upon a users request (through an issue or pr) you can always add more conditions to this :>
+    			sb.Append(c);
+        	}
+    	}
+    	return sb.ToString();
+	}
 }
 
 public static partial class DBInteract { // DBInteract class partition for towns
