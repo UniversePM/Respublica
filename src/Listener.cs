@@ -1,12 +1,15 @@
 namespace Respublica;
 
 using Minecraft.Server.FourKit.Event;
+using Minecraft.Server.FourKit.Event.Block;
 using Minecraft.Server.FourKit.Event.Player;
 
 public enum eventEnum {
 	INTERACT_ERR,
 	BREAK_ERR,
-	PLACE_ERR
+	PLACE_ERR,
+	PVP_ERR,
+	ATTK_ERR
 }
 
 public class RespublicaListener : Listener
@@ -30,7 +33,7 @@ public class RespublicaListener : Listener
 			}
 			DBInteract.initPlr(e.getPlayer()); Console.WriteLine("Plr didn't exist, creating"); return; }
 
-		Console.WriteLine($"Plr exists, name={e.getPlayer().getName()}, uid={e.getPlayer().getUniqueId()}");
+		Console.WriteLine($"[RESPUBLICA] Plr exists, name={e.getPlayer().getName()}, uid={e.getPlayer().getUniqueId()}");
 
 		DBInteract.updatePlr(e.getPlayer().getUniqueId(), e.getPlayer().getName()); // UNI - no reason not to always do ig? would just be annoying to constantly check if the usrname is different
 	}
@@ -41,12 +44,31 @@ public class RespublicaListener : Listener
 	{
 		var cloc = Chunk.cToCC(e.getPlayer().getLocation());
 		var chunk = Chunk.getChunk(cloc.x, cloc.z);
+		var town = DBInteract.getTownById(chunk?.town ?? LiteDB.ObjectId.Empty);
 
 		if (chunk == null) return;
 
-		if (DBInteract.getTownById(chunk.town) != DBInteract.getTown(e.getPlayer()))
+		if (town != DBInteract.getTown(e.getPlayer()))
 		{
 			e.getPlayer().sendMessage(toTex(eventEnum.INTERACT_ERR));
+			e.setCancelled(true);
+			return;
+		}
+	}
+
+	// destroying
+	[EventHandler]
+	public void onBreak(BlockBreakEvent e)
+	{
+		var cloc = Chunk.cToCC(e.getPlayer().getLocation());
+		var chunk = Chunk.getChunk(cloc.x, cloc.z);
+		var town = DBInteract.getTownById(chunk?.town ?? LiteDB.ObjectId.Empty);
+
+		if (chunk == null) return;
+
+		if (town != DBInteract.getTown(e.getPlayer()))
+		{
+			e.getPlayer().sendMessage(toTex(eventEnum.BREAK_ERR));
 			e.setCancelled(true);
 			return;
 		}

@@ -25,6 +25,7 @@ public class TownCmd : CommandExecutor // Commands for managing towns
 		}
 
 		if (args.Length > 0) {
+			if (string.IsNullOrEmpty(Plr.guidToUsrname(((Player)sender).getUniqueId()))) return true;
 			switch(args[0]) {
 				case "new":
                 case "create":
