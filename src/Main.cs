@@ -27,7 +27,7 @@ public class Respublica : ServerPlugin
     {
         Database.Instance.Dispose();
 		if (!Directory.Exists(path)) {
-			Console.WriteLine("[DUCKPERM] PluginDB directory missing! Restart server to create automatically.");
+			Console.WriteLine("[RESPUBLICA] PluginDB directory missing! Restart server to create automatically.");
 		}
     }
 }

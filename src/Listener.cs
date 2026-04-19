@@ -22,7 +22,13 @@ public class RespublicaListener : Listener
 	[EventHandler]
 	public void onJoin(PlayerJoinEvent e)
 	{
-		if (!DBInteract.isPlrReal(e.getPlayer().getUniqueId())) { DBInteract.initPlr(e.getPlayer()); Console.WriteLine("Plr didn't exist, creating"); return; }
+		if (!DBInteract.isPlrReal(e.getPlayer().getUniqueId())) {
+			if (Plr.usrToGuid(e.getPlayer().getName()) != Guid.Empty) {
+				e.getPlayer().sendMessage("[RESPUBLICA] Someone has already joined this server with your username!");
+				e.getPlayer().sendMessage("Because of this, you won't be able to interact with Respublica until you have a different name.");
+				return;
+			}
+			DBInteract.initPlr(e.getPlayer()); Console.WriteLine("Plr didn't exist, creating"); return; }
 
 		Console.WriteLine($"Plr exists, name={e.getPlayer().getName()}, uid={e.getPlayer().getUniqueId()}");
 
