@@ -43,13 +43,13 @@ public static partial class DBInteract { // DBInteract class partition for towns
 		}
 		var ccoord = Chunk.cToCC(mayor.getLocation());
 		var newc = Chunk.initChunk(ccoord.x, ccoord.z, getTown(name).id);
-       		var newtown = new DBTown
-        	{
-            	name = name,
-            	mayor = mayor.getUniqueId(),
-				homeChunk = newc
-        	};
-        	newtown.residents.Add(mayor.getUniqueId());
+       	var newtown = new DBTown
+    	{
+        	name = name,
+        	mayor = mayor.getUniqueId(),
+			homeChunk = newc
+        };
+        newtown.residents.Add(mayor.getUniqueId());
 		
 		createChunk(newc); // create the chunk
 		col.Insert(newtown);

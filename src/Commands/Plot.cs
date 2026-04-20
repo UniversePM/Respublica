@@ -11,6 +11,7 @@ public class PlotCmd : CommandExecutor // Commands for managing invites
 
         var pcoord = Chunk.cToCC(((Player)sender).getLocation());
         var plot = DBInteract.getPlot(pcoord.x, pcoord.z) ?? new();
+        var chunk = Chunk.getChunk(pcoord.x, pcoord.z) ?? new();
         if (DBInteract.getTownById(plot.town) == new DBTown()) // UNI - for not showing how bad the plot code is
         {
             plot.perm.PVP = true; plot.perm.EXPLOSION = true; plot.perm.FIRE = true; plot.perm.MOBS = true;
@@ -25,6 +26,7 @@ public class PlotCmd : CommandExecutor // Commands for managing invites
         {
             sender.sendMessage($"--- Plot ({pcoord.x}, {pcoord.z}) ---");
             var tname = DBInteract.getTownById(plot.town).name;
+            if (string.IsNullOrEmpty(tname)) tname = DBInteract.getTownById(chunk.town).name;
             sender.sendMessage(string.Format("Town: {0}", string.IsNullOrEmpty(tname) ? "None" : Town.formatName(tname))); // UNI - don't question the string.Format use
             sender.sendMessage(string.Format("Owner: {0}", string.IsNullOrEmpty(Plr.guidToUsrname(plot.owner)) ? "None" : Plr.guidToUsrname(plot.owner)));
             sender.sendMessage($"PVP: {plot.perm.PVP} EXPLOSIONS: {plot.perm.EXPLOSION} FIRE: {plot.perm.FIRE} MOBS: {plot.perm.MOBS}");
@@ -37,13 +39,12 @@ public class PlotCmd : CommandExecutor // Commands for managing invites
             switch (args[0])
             {
                 case "claim":
-                    var claimchunk = Chunk.getChunk(pcoord.x, pcoord.z);
-                    if (claimchunk == null) { sender.sendMessage("No town has claimed this chunk!"); break; }
+                    if (chunk == null) { sender.sendMessage("No town has claimed this chunk!"); break; }
                     if (plot.owner == ((Player)sender).getUniqueId()) { sender.sendMessage("You already own this plot!"); break; }
                     if (plot.owner != Guid.Empty) { sender.sendMessage("Plot is already claimed!"); break; }
                     if (!plot.forsale) { sender.sendMessage("Plot not for sale!"); break; }
 
-                    if (DBInteract.getPlot(pcoord.x, pcoord.z) == null) DBInteract.initPlot(claimchunk);
+                    if (DBInteract.getPlot(pcoord.x, pcoord.z) == null) DBInteract.initPlot(chunk);
                     var claimplot = plot;
                     claimplot.owner = ((Player)sender).getUniqueId();
                     DBInteract.updatePlot(plot, claimplot);
