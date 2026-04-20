@@ -6,9 +6,9 @@ using Minecraft.Server.FourKit;
 
 public class Respublica : ServerPlugin
 {
-//	private static Respublica? _instance;
+	private static Respublica? _instance;
 
-//	public static Respublica? getInstance() => _instance;
+	public static Respublica? getInstance() => _instance;
 
 	public override string name => "Respublica";
 	public override string version => "1.0.0-alpha.1";
@@ -17,7 +17,7 @@ public class Respublica : ServerPlugin
 	private const string path = @"./plugindb"; // i have it as ./ bc it executes as the server exe - uni
 
 	public override void onEnable() {
-//		_instance = this;
+		_instance = this;
 		Init.InitCmd();
 
 		FourKit.addListener(new RespublicaListener());

@@ -10,7 +10,7 @@
 
 	<ItemGroup>
 		<Reference Include="Minecraft.Server.FourKit">
-			<HintPath>..\Minecraft.Server.FourKit.dll</HintPath>
+			<HintPath>..\Minecraft.Server.Fourkit.dll</HintPath>
 		</Reference>
 		<Reference Include="LiteDB">
 			<HintPath>LiteDB.dll</HintPath>

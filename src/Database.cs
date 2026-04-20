@@ -1,6 +1,7 @@
 namespace Respublica;
 
 using LiteDB;
+using Minecraft.Server.FourKit;
 
 internal class Database : IDisposable
 {
@@ -16,6 +17,9 @@ internal class Database : IDisposable
 			} catch
 			{
 				Console.WriteLine("[RESPUBLICA] Failed to create plugindb instance");
+                var inst = Respublica.getInstance();
+                if (inst == null) return;
+                FourKit.disablePlugin(inst);
 				return;
 			}
 		}
