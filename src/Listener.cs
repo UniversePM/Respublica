@@ -91,6 +91,7 @@ public class RespublicaListener : Listener
 	[EventHandler]
 	public void onInteract(PlayerInteractEvent e)
 	{
+		if (e.getAction() != Minecraft.Server.FourKit.Block.Action.RIGHT_CLICK_BLOCK) return;
 		var cloc = Chunk.cToCC(e.getPlayer().getLocation());
 		var chunk = Chunk.getChunk(cloc.x, cloc.z);
 		var town = DBInteract.getTownById(chunk?.town ?? LiteDB.ObjectId.Empty);
