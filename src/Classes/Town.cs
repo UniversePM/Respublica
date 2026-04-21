@@ -79,7 +79,7 @@ public static partial class DBInteract { // DBInteract class partition for towns
 
 		dbt.id = town.id;
 
-		col.Update(dbt); // UNI - there has to be a better way of doing this omfg
+		col.Update(dbt);
 	}
 	public static DBTown getTown(string name)
 	{

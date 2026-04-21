@@ -70,16 +70,18 @@ public class TownCmd : CommandExecutor // Commands for managing towns
 							DBInteract.updateTown(t, newt);
 							sender.sendMessage($"Resigned mayor position to {newmayor}");
 							break;
+						case "home":
+						case "block":
+						case "hb":
 						case "homeblock":
 							var newhome = (MCTown)t;
 							var newcoord = Chunk.cToCC(((Player)sender).getLocation());
-							var newchunk = Chunk.getChunk(newcoord.x, newcoord.z);
-							if (newchunk == null)
+							if (Chunk.getChunk(newcoord.x, newcoord.z) == null)
 							{
 								sender.sendMessage("Chunk is not available.");
 								break;
 							}
-							newhome.homeChunk = newchunk;
+							newhome.homeChunk = newcoord;
 							DBInteract.updateTown(t, newhome);
 							sender.sendMessage($"Changed home chunk to {{{newcoord.x}, {newcoord.z}}}.");
 							break;
