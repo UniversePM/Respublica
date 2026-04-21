@@ -98,5 +98,14 @@ public static partial class DBInteract { // DBInteract class partition for towns
 		if (getT == null) return new DBTown();
 		else return getT;
 	}
-	public static DBTown getTownById(LiteDB.ObjectId id) => Database.Instance.GetCollection<DBTown>("towns").Find(x => x.id == id).FirstOrDefault() ?? new DBTown();
+	public static DBTown getTownById(LiteDB.ObjectId id)
+	{
+		var t = Database.Instance.GetCollection<DBTown>("towns").Find(x => x.id == id).FirstOrDefault();
+		if (t == null)
+		{
+			Console.WriteLine("Town does not exist!");
+			return new DBTown {name=" ??? "};
+		}
+		return t;
+	}
 }
