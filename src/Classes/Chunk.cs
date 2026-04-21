@@ -18,6 +18,7 @@ public class MCChunk { // Class for Non-DB chunks
 	public int x { get; set; }
     public int z { get; set; }
     public LiteDB.ObjectId town { get; set; } = LiteDB.ObjectId.Empty; // id of town that owns the land
+	public MCPlot plot = new();
 }
 
 public class DBChunk : MCChunk { // Class (of MCChunk) for DB chunks
@@ -62,8 +63,8 @@ public static class Chunk { // Class for processing chunks in certain ways
 	}
 
 	public static availabilityEnum chunkAvailable(MCChunk chunk) { // chunk format: x is the chunk x, z is the chunk z, town is the town that is requesting availability
-		LiteDB.ObjectId? tcheck = getChunk(chunk.x, chunk.z)?.town; // gets the REAL town in that chunk, null if unclaimed
-		if (tcheck != LiteDB.ObjectId.Empty) {
+		var tcheck = getChunk(chunk.x, chunk.z)?.town; // gets the REAL town in that chunk, null if unclaimed
+		if (tcheck != null) {
 			if (tcheck == chunk.town) return availabilityEnum.SELF_CLAIMED;
 			return availabilityEnum.EX_CLAIMED;
 		}

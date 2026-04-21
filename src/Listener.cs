@@ -15,7 +15,7 @@ public enum eventEnum {
 	ATTK_ERR
 }
 
-public class RespublicaListener : Listener
+internal sealed class RespublicaListener : Listener
 {
 	public readonly List<EntityType> MOBS = // list of bad mobs that the player should always be able to hit
 	[
@@ -95,11 +95,10 @@ public class RespublicaListener : Listener
 		if (e.getAction() != Minecraft.Server.FourKit.Block.Action.RIGHT_CLICK_BLOCK) return;
 		var cloc = Chunk.cToCC(e.getClickedBlock().getLocation()); // UNI - don't worry abt this, its already guaranteed to be not-null
 		var chunk = Chunk.getChunk(cloc.x, cloc.z);
-		var town = DBInteract.getTownById(chunk?.town ?? LiteDB.ObjectId.Empty);
 
 		if (chunk == null) return;
 
-		if (town != DBInteract.getTown(e.getPlayer()))
+		if ((chunk?.town ?? LiteDB.ObjectId.Empty) != DBInteract.getTown(e.getPlayer()).id)
 		{
 			e.getPlayer().sendMessage(toTex(eventEnum.INTERACT_ERR));
 			e.setCancelled(true);
@@ -112,11 +111,10 @@ public class RespublicaListener : Listener
 	{
 		var cloc = Chunk.cToCC(e.getRightClicked().getLocation());
 		var chunk = Chunk.getChunk(cloc.x, cloc.z);
-		var town = DBInteract.getTownById(chunk?.town ?? LiteDB.ObjectId.Empty);
 
 		if (chunk == null) return;
 
-		if (town != DBInteract.getTown(e.getPlayer()))
+		if ((chunk?.town ?? LiteDB.ObjectId.Empty) != DBInteract.getTown(e.getPlayer()).id)
 		{
 			e.getPlayer().sendMessage(toTex(eventEnum.INTERACT_ERR));
 			e.setCancelled(true);
@@ -132,11 +130,10 @@ public class RespublicaListener : Listener
 
 		var cloc = Chunk.cToCC(e.getLocation());
 		var chunk = Chunk.getChunk(cloc.x, cloc.z);
-		var town = DBInteract.getTownById(chunk?.town ?? LiteDB.ObjectId.Empty);
 
 		if (chunk == null) return;
 
-		if (town != DBInteract.getTown(plr))
+		if ((chunk?.town ?? LiteDB.ObjectId.Empty) != DBInteract.getTown(plr).id)
 		{
 			plr.sendMessage(toTex(eventEnum.INTERACT_ERR));
 			e.setCancelled(true);
@@ -150,11 +147,10 @@ public class RespublicaListener : Listener
 	{
 		var cloc = Chunk.cToCC(e.getBlock().getLocation());
 		var chunk = Chunk.getChunk(cloc.x, cloc.z);
-		var town = DBInteract.getTownById(chunk?.town ?? LiteDB.ObjectId.Empty);
 
 		if (chunk == null) return;
 
-		if (town != DBInteract.getTown(e.getPlayer()))
+		if ((chunk?.town ?? LiteDB.ObjectId.Empty) != DBInteract.getTown(e.getPlayer()).id)
 		{
 			e.getPlayer().sendMessage(toTex(eventEnum.BREAK_ERR));
 			e.setCancelled(true);
@@ -167,11 +163,10 @@ public class RespublicaListener : Listener
 	{
 		var cloc = Chunk.cToCC(e.getBlock().getLocation());
 		var chunk = Chunk.getChunk(cloc.x, cloc.z);
-		var town = DBInteract.getTownById(chunk?.town ?? LiteDB.ObjectId.Empty);
 
 		if (chunk == null) return;
 
-		if (town != DBInteract.getTown(e.getPlayer()))
+		if ((chunk?.town ?? LiteDB.ObjectId.Empty) != DBInteract.getTown(e.getPlayer()).id)
 		{
 			e.getPlayer().sendMessage(toTex(eventEnum.PLACE_ERR));
 			e.setCancelled(true);
@@ -189,7 +184,7 @@ public class RespublicaListener : Listener
 		Chunk.getChunk(from.getChunk().getX(), from.getChunk().getZ())?.town !=
 		 Chunk.getChunk(to.getChunk().getX(), to.getChunk().getZ())?.town &&
 		Chunk.getChunk(to.getChunk().getX(), to.getChunk().getZ())?.town !=
-		 LiteDB.ObjectId.Empty
+		 null
 		) // only trigger when the var from block's chunk isn't the same town as var to's chunk and only do that if to's town isn't empty
 		{
 			e.setCancelled(true);
@@ -207,9 +202,8 @@ public class RespublicaListener : Listener
 		var cloc = Chunk.cToCC(((Player)e.getDamager()).getLocation());
 		var chunk = Chunk.getChunk(cloc.x, cloc.z);
 		if (chunk == null) return;
-		var town = DBInteract.getTownById(chunk?.town ?? LiteDB.ObjectId.Empty);
 
-		if (town != DBInteract.getTown((Player)e.getDamager()))
+		if ((chunk?.town ?? LiteDB.ObjectId.Empty) != DBInteract.getTown((Player)e.getDamager()).id)
 		{
 			if (e.getEntity().getType() == EntityType.PLAYER) ((Player)e.getDamager()).sendMessage(toTex(eventEnum.PVP_ERR));
 			else ((Player)e.getDamager()).sendMessage(toTex(eventEnum.ATTK_ERR));

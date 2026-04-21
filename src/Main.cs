@@ -18,6 +18,7 @@ public class Respublica : ServerPlugin
 
 	public override void onEnable() {
 		_instance = this;
+		Init.InitPnt();
 		Init.InitCmd();
 
 		FourKit.addListener(new RespublicaListener());
