@@ -62,16 +62,14 @@ public static class Chunk { // Class for processing chunks in certain ways
 		return result;
 	}
 
-	public static availabilityEnum chunkAvailable(MCChunk chunk) { // chunk format: x is the chunk x, z is the chunk z, town is the town that is requesting availability
-		var tcheck = getChunk(chunk.x, chunk.z)?.town; // gets the REAL town in that chunk, null if unclaimed
+	public static availabilityEnum chunkAvailable(MCChunk chunk, LiteDB.ObjectId town) { // chunk format: x is the chunk x, z is the chunk z, town is the town that is requesting availability
+		var tcheck = getChunk(chunk.x, chunk.z); // gets the REAL town in that chunk, null if unclaimed
 		if (tcheck != null) {
-			if (tcheck == chunk.town) return availabilityEnum.SELF_CLAIMED;
+			if (tcheck.town == chunk.town) return availabilityEnum.SELF_CLAIMED;
 			return availabilityEnum.EX_CLAIMED;
 		}
 		var near = nearChunks(chunk);
-		foreach (DBChunk nearchunk in near) {
-			if (nearchunk.town == tcheck) return availabilityEnum.AVAILABLE;
-		}
+		if (near.Any(x => x.town == town)) return availabilityEnum.AVAILABLE;
 		return availabilityEnum.NOT_NEAR;
 	}
 

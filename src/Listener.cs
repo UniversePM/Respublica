@@ -77,16 +77,17 @@ internal sealed class RespublicaListener : Listener
 		var c1 = Chunk.getChunk(cloc1.x, cloc1.z);
 		var c2 = Chunk.getChunk(cloc2.x, cloc2.z);
 
-		if (c2 != null && c2.town != LiteDB.ObjectId.Empty && c1?.town != c2.town)
+		if (c2 != null && c1?.town != c2.town)
 		{
 			e.getPlayer().sendMessage($"Entering {DBInteract.getTownById(c2.town).name}!");
 		}
-		if (c1 != null && c1.town != LiteDB.ObjectId.Empty && (c2 == null || c2?.town == LiteDB.ObjectId.Empty))
+		if (c1 != null && c2 == null)
 		{
 			e.getPlayer().sendMessage("Entering the wild!");
 		}
 	}
 	// UNI - Improved if-statements using Claude Sonnet 4.6
+	// UNI - I updated the if statements further FYI
 
 	// interactions
 	[EventHandler]

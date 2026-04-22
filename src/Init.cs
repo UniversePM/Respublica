@@ -48,6 +48,8 @@ internal static class Init // Function/class for initializing all the commands (
         FourKit.getCommand("inv").setExecutor(new Commands.InvCmd());
         FourKit.getCommand("plot").setExecutor(new Commands.PlotCmd());
         FourKit.getCommand("p").setExecutor(new Commands.PlotCmd());
+        FourKit.getCommand("respublica").setExecutor(new Commands.RespublicaCmd());
+        FourKit.getCommand("rpba").setExecutor(new Commands.RespublicaCmd());
     }
     public static void InitPnt()
     {

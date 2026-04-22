@@ -16,7 +16,7 @@ public class InvCmd : CommandExecutor // Commands for managing invites
             sender.sendMessage("Do /invite accept [name] to join a town!");
         }
 
-        if (args.Length > 1)
+        if (args.Length > 0)
         {
             if (string.IsNullOrEmpty(Plr.guidToUsrname(((Player)sender).getUniqueId()))) return true;
             switch (args[0])

@@ -20,7 +20,7 @@ public static class Town // Class for processing towns
 {
 	public static string formatName(string name) => name.Replace("_", " ");
 	public static string RemoveSpecialCharacters(this string str) {
-    	StringBuilder sb = new StringBuilder();
+    	StringBuilder sb = new();
     	foreach (char c in str) {
         	if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '-' || c == '_' || c == '\'') { // UNI - upon a users request (through an issue or pr) you can always add more conditions to this :>
     			sb.Append(c);
@@ -100,15 +100,6 @@ public static partial class DBInteract { // DBInteract class partition for towns
 		if (getT == null) return new DBTown();
 		else return getT;
 	}
-	public static DBTown getTownById(LiteDB.ObjectId id)
-	{
-		var t = Database.Instance.GetCollection<DBTown>("towns").FindById(id);
-		if (t == null)
-		{
-			Console.WriteLine("Town does not exist!");
-			return new DBTown {name=" ??? "};
-		}
-		return t;
-	}
+	public static DBTown getTownById(LiteDB.ObjectId id) => Database.Instance.GetCollection<DBTown>("towns").FindById(id) ?? new();
 	// UNI - FindById bug fix, Claude Sonnet 4.6, applied to all functions with FindById (only getTownById was part of the prompt)
 }

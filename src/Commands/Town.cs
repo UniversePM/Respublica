@@ -99,7 +99,7 @@ public class TownCmd : CommandExecutor // Commands for managing towns
 
 					var newcoord2 = Chunk.cToCC(((Player)sender).getLocation());
 					var newclaim = Chunk.initChunk(newcoord2.x, newcoord2.z, t.id); // UNI - to put a little less on the db
-					var available = Chunk.chunkAvailable(newclaim);
+					var available = Chunk.chunkAvailable(newclaim, t.id);
 					if (available != availabilityEnum.AVAILABLE)
 					{
 						switch (available)
