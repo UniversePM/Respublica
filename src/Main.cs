@@ -5,18 +5,23 @@ using Commands;
 using Minecraft.Server.FourKit;
 using System.Reflection;
 
-internal class ExternalExtra {
+internal class ExternalFunc {
 	public string type = "subtown";
 	public required string name;
-	public required MethodInfo func;
+	public string cmd = "";
+	public required Delegate func;
 }
 
 public class Respublica : ServerPlugin
 {
 	private static Respublica? _instance;
 	public static Respublica? getInstance() => _instance;
+	internal static void setInstance(Respublica inst)
+	{
+		_instance = inst;
+	}
 
-	internal List<ExternalExtra> extRegisterFunc = [];
+	internal List<ExternalFunc> extRegisterFunc = [];
 
 	public override string name => "Respublica";
 	public override string version => "1.0.0-alpha.1";
@@ -25,7 +30,7 @@ public class Respublica : ServerPlugin
 	private const string path = @"./plugindb"; // i have it as ./ bc it executes as the server exe - uni
 
 	public override void onEnable() {
-		_instance = this;
+		_instance ??= this;
 		Init.InitPnt();
 		Init.InitCmd();
 

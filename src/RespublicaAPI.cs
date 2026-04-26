@@ -5,22 +5,23 @@ namespace Respublica;
 public class RespublicaAPI
 {
     private static RespublicaAPI? _instance;
-
     public static RespublicaAPI getInstance() => _instance ??= new RespublicaAPI();
 
-    public static void registerExternal(string type, string name, object classfunc)
+    internal static Respublica? getRespublica()
     {
-        var ctype = classfunc.GetType();
+        if (Respublica.getInstance() == null) Respublica.setInstance(new Respublica());
+        return Respublica.getInstance();
+    }
 
-        MethodInfo? method = ctype.GetMethod(name, BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, Type.EmptyTypes);
-        if (method == null) return;
-
-        var exex = new ExternalExtra
+    public static void registerExternal(string type, string name, string cmd, Delegate func)
+    {
+        var exex = new ExternalFunc
         {
             type = type,
             name = name,
-            func = method
+            cmd = cmd,
+            func = func
         };
-        Respublica.getInstance()?.extRegisterFunc.Add(exex);
+        getRespublica()?.extRegisterFunc.Add(exex);
     }
 }
