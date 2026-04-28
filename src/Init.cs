@@ -50,6 +50,8 @@ internal sealed class Init // Function/class for initializing all the commands (
         FourKit.getCommand("p").setExecutor(new Commands.PlotCmd());
         FourKit.getCommand("respublica").setExecutor(new Commands.RespublicaCmd());
         FourKit.getCommand("rpba").setExecutor(new Commands.RespublicaCmd());
+        FourKit.getCommand("nation").setExecutor(new Commands.NationCmd());
+        FourKit.getCommand("n").setExecutor(new Commands.NationCmd());
     }
     public static void InitPnt()
     {

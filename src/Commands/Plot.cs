@@ -17,7 +17,7 @@ internal sealed class PlotCmd : CommandExecutor // Commands for managing invites
         {
             plot.perm.PVP = true; plot.perm.EXPLOSION = true; plot.perm.FIRE = true; plot.perm.MOBS = true;
         }
-        else if (string.IsNullOrEmpty(PlrInteract.guidToUsrname(plot.owner)))
+        else if (string.IsNullOrEmpty(PlrRegister.guidToUsrname(plot.owner)))
         {
             plot.perm.PVP = t.perm.PVP; plot.perm.EXPLOSION = t.perm.EXPLOSION; plot.perm.FIRE = t.perm.FIRE; plot.perm.MOBS = t.perm.MOBS;
         }
@@ -26,14 +26,14 @@ internal sealed class PlotCmd : CommandExecutor // Commands for managing invites
         {
             sender.sendMessage($"--- Plot ({pcoord.x}, {pcoord.z}) ---");
             sender.sendMessage(string.Format("Town: {0}", string.IsNullOrEmpty(t?.name) ? "None" : StringManager.formatName(t.name))); // UNI - don't question the string.Format use
-            sender.sendMessage(string.Format("Owner: {0}", string.IsNullOrEmpty(PlrInteract.guidToUsrname(plot.owner)) ? "None" : PlrInteract.guidToUsrname(plot.owner)));
+            sender.sendMessage(string.Format("Owner: {0}", string.IsNullOrEmpty(PlrRegister.guidToUsrname(plot.owner)) ? "None" : PlrRegister.guidToUsrname(plot.owner)));
             sender.sendMessage($"PVP: {plot.perm.PVP} EXPLOSIONS: {plot.perm.EXPLOSION} FIRE: {plot.perm.FIRE} MOBS: {plot.perm.MOBS}");
             sender.sendMessage(plot.forsale ? "Plot for sale! Do [/plot claim] to claim this plot." : "Plot not for sale.");
         }
 
         if (args.Length > 0)
         {
-            if (string.IsNullOrEmpty(PlrInteract.guidToUsrname(((Player)sender).getUniqueId()))) return true;
+            if (string.IsNullOrEmpty(PlrRegister.guidToUsrname(((Player)sender).getUniqueId()))) return true;
 
             var getregfunc = (Respublica.getInstance()?.extRegisterFunc ?? []).Find(x => x.type == ExternalType.SubPlot && x.cmd == args[0]);
             if (getregfunc != null)
@@ -61,24 +61,24 @@ internal sealed class PlotCmd : CommandExecutor // Commands for managing invites
 						case "add":
 							if (plot.owner != ((Player)sender).getUniqueId()) { sender.sendMessage("You don't own this plot!"); break; }
 							if (args.Length < 3) { sender.sendMessage("Invalid trust command."); break; }
-							if (plot.trusted.Contains(PlrInteract.usrToGuid(args[2]))) { sender.sendMessage($"{args[2]} is already trusted in this plot!"); break; }
-							if (!DBInteract.isPlrReal(PlrInteract.usrToGuid(args[2]))) {sender.sendMessage($"Player {args[2]} is not registered on this server.");break;}
-							chunk.plot.trusted.Add(PlrInteract.usrToGuid(args[2]));
+							if (plot.trusted.Contains(PlrRegister.usrToGuid(args[2]))) { sender.sendMessage($"{args[2]} is already trusted in this plot!"); break; }
+							if (!DBInteract.isPlrReal(PlrRegister.usrToGuid(args[2]))) {sender.sendMessage($"Player {args[2]} is not registered on this server.");break;}
+							chunk.plot.trusted.Add(PlrRegister.usrToGuid(args[2]));
 							DBInteract.updateChunk(chunk, chunk);
 							sender.sendMessage($"Trusted {args[2]} in this plot.");
 							break;
 						case "remove":
 							if (plot.owner != ((Player)sender).getUniqueId()) { sender.sendMessage("You don't own this plot!"); break; }
 							if (args.Length < 3) { sender.sendMessage("Invalid trust command."); break; }
-							if (!plot.trusted.Contains(PlrInteract.usrToGuid(args[2]))) { sender.sendMessage($"{args[2]} already isn't trusted!"); break; }
+							if (!plot.trusted.Contains(PlrRegister.usrToGuid(args[2]))) { sender.sendMessage($"{args[2]} already isn't trusted!"); break; }
 							// no need to check if usr is real
-							chunk.plot.trusted.Remove(PlrInteract.usrToGuid(args[2]));
+							chunk.plot.trusted.Remove(PlrRegister.usrToGuid(args[2]));
 							DBInteract.updateChunk(chunk, chunk);
 							sender.sendMessage($"Untrusted {args[2]} in this plot.");
 							break;
 						case "list":
 							sender.sendMessage("--- Trusted ---");
-            				foreach (var tlp in plot.trusted) sender.sendMessage(PlrInteract.guidToUsrname(tlp) ?? "? (Invalid user)");
+            				foreach (var tlp in plot.trusted) sender.sendMessage(PlrRegister.guidToUsrname(tlp) ?? "? (Invalid user)");
 							break;
 					}
 					break;

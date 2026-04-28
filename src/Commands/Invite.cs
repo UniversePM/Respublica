@@ -18,7 +18,7 @@ internal sealed class InvCmd : CommandExecutor // Commands for managing invites
 
         if (args.Length > 0)
         {
-            if (string.IsNullOrEmpty(PlrInteract.guidToUsrname(((Player)sender).getUniqueId()))) return true;
+            if (string.IsNullOrEmpty(PlrRegister.guidToUsrname(((Player)sender).getUniqueId()))) return true;
 
             var getregfunc = (Respublica.getInstance()?.extRegisterFunc ?? []).Find(x => x.type == ExternalType.SubInvite && x.cmd == args[0]);
             if (getregfunc != null)

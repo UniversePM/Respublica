@@ -21,7 +21,7 @@ public class Chunk { // Class for Non-DB chunks
 	public Plot plot = new();
 }
 
-public class DBChunk : Chunk { // Class (of MCChunk) for DB chunks
+public class DBChunk : Chunk { // Class (of Chunk) for DB chunks
 	public LiteDB.ObjectId id { get; set; } = LiteDB.ObjectId.NewObjectId();
 }
 
@@ -77,6 +77,10 @@ public static class ChunkInteract { // Class for processing chunks in certain wa
 }
 
 public static partial class DBInteract { // DB class partition for chunks
+	/// <summary>
+	/// Creates a chunk in the Database.
+	/// </summary>
+	/// <param name="chunk">The Chunk object.</param>
 	public static void createChunk(Chunk chunk) {
 		var col = Database.Instance.GetCollection<DBChunk>("chunks");
 		if (ChunkInteract.getChunk(chunk.x, chunk.z) != null) {
@@ -85,6 +89,11 @@ public static partial class DBInteract { // DB class partition for chunks
 		}
 		col.Insert(ChunkInteract.initDBc(chunk));
 	}
+
+	/// <summary>
+	/// Removes a chunk from the Database.
+	/// </summary>
+	/// <param name="chunk">The Database chunk object.</param>
 	public static void remChunk(DBChunk chunk) {
 		var col = Database.Instance.GetCollection<DBChunk>("chunks");
 		if (ChunkInteract.getChunk(chunk.x, chunk.z) == null) {
@@ -93,6 +102,12 @@ public static partial class DBInteract { // DB class partition for chunks
 		}
 		col.Delete(chunk.id);
 	}
+
+	/// <summary>
+	/// Updates a chunk in the Database.
+	/// </summary>
+	/// <param name="chunk">The Database chunk object to update.</param>
+	/// <param name="newchunk">The updated chunk object.</param>
 	public static void updateChunk(DBChunk chunk, Chunk newchunk) {
 		var col = Database.Instance.GetCollection<DBChunk>("chunks");
 		if (ChunkInteract.getChunk(chunk.x, chunk.z) == null) {

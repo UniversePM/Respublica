@@ -57,7 +57,7 @@ internal sealed class RespublicaListener : Listener
 	public void onJoin(PlayerJoinEvent e)
 	{
 		if (!DBInteract.isPlrReal(e.getPlayer().getUniqueId())) {
-			if (PlrInteract.usrToGuid(e.getPlayer().getName()) != Guid.Empty) {
+			if (PlrRegister.usrToGuid(e.getPlayer().getName()) != Guid.Empty) {
 				e.getPlayer().sendMessage("[RESPUBLICA] Someone has already joined this server with your username!");
 				e.getPlayer().sendMessage("Because of this, you won't be able to interact with Respublica until you have a different name.");
 				return;
